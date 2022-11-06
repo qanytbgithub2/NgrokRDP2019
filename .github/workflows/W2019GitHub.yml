@@ -1,0 +1,39 @@
+name: W2019RDP
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+    timeout-minutes: 99999
+  
+    steps:
+
+    - name: Download Ngrok
+      run: |
+        Invoke-WebRequest https://github.com/QuocAnVN1310/NgrokRDP2019/raw/main/ngrok.zip -OutFile ngrok.zip
+        Invoke-WebRequest https://raw.githubusercontent.com/QuocAnVN1310/NgrokRDP2019/main/start.bat -OutFile start.bat
+    - name: Extract File
+      run: Expand-Archive ngrok.zip
+
+    - name: Connect Ngrok Account
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROK-TOKEN
+      env:
+        NGROK: ${{ secrets.NGROK }}
+
+    - name: Turn on Remote Desktop
+      run: |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
+        
+    - name: Create TCP IP
+      run: Start-Process Powershell -ArgumentList '-Noexit -Command ".\ngrok\ngrok.exe tcp --region=us 3389"'
+
+    - name: Connect To VPS [CPU 2 Core - 7GB Ram - 256 SSD]
+      run: cmd /c start.bat
+
+    - name: TimeCount
+      run: |
+        Invoke-WebRequest https://raw.githubusercontent.com/adtitas/ngrok-rdp/main/resources/loop.ps1 -OutFile loop.ps1
+        ./loop.ps1
