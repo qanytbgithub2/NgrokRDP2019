@@ -17,9 +17,9 @@ jobs:
       run: Expand-Archive ngrok.zip
 
     - name: Connect Ngrok Account
-      run: .\ngrok\ngrok.exe ngrok authtoken $Env:NGROK_TOKEN
+      run: .\ngrok\ngrok.exe authtoken $Env:NGROK_TOKEN
       env:
-        NGROK: ${{ secrets.NGROK_TOKEN }}
+        $NGROK: ${{ secrets.NGROK_TOKEN }}
 
     - name: Turn on Remote Desktop
       run: |
