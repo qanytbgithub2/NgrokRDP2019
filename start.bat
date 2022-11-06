@@ -15,7 +15,7 @@ ICACLS C:\Windows\installer /grant QuocAnVN:F >nul
 echo Successfully installed! If RDP is dead, rebuild again.
 echo IP:
 tasklist | find /i "ngrok.exe" >Nul && curl -s localhost:4040/api/tunnels | jq -r .tunnels[0].public_url || echo "Failed to retreive NGROK authtoken - check again your authtoken"
-echo Username: githubuser
-echo Password: 2#3RmQh49yB!kJq25RzhCC
+echo Username: QuocAnVN
+echo Password: @DEV3.QYTB
 echo You can login now.
 ping -n 10 127.0.0.1 >nul
